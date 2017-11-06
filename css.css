@@ -1,0 +1,134 @@
+body {
+    font-family: "Roboto";
+    background-color: #ffffef;
+    text-align: center;
+    overflow-x: hidden;
+}
+h1 {
+    font-family: "Open Sans";
+}
+ev {
+    text-align: left;
+    display: inline-block;
+    max-width: 45em;
+    min-width: 10em;
+    width: 75vw;
+    height: auto;
+    position: relative;
+    padding: 32px;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.4) 2px 4px 8px 0px;
+    margin: 0;
+    background-color: #efefff;
+    will-change: filter;
+    transition: 0.15s;
+}
+.noshow {
+    display: none;
+}
+.red {
+    color: red;
+}
+i {
+    display: inline-block;
+    width: 2em;
+}
+button {
+    font-family: "courier new";
+    font-weight: bold;
+    transition: 0.15s;
+    will-change: opacity, box-shadow;
+    opacity: 0.85;
+    border: 0;
+    padding: 0.75em 1.25em;
+    display: block;
+    margin: 0.5em;
+    cursor: pointer;
+    border-radius: 2px;
+    box-shadow: rgba(0, 0, 0, 0.6) 2px 2px 4px 0px;
+    outline: none;
+}
+button:hover {
+    opacity: 1;
+    box-shadow: rgba(0, 0, 0, 0.5) 4px 4px 6px 1px;
+}
+button d {
+    will-change: left;
+    left: 0;
+    transition: 0.1s;
+    position: relative;
+}
+button:active d {
+    left: 2px;
+}
+button.green {
+    color: #000;
+    background-color: #0f0;
+}
+button.blue {
+    color: #fff;
+    background-color: #00f;
+}
+button.red {
+    color: #fff;
+    background: #f00;
+}
+.codeE {
+    width: 100%;
+    min-height: 256px;
+    max-height: 1080px;
+    height: 35vh;
+}
+.codeEP {
+    width: 100%;
+    min-height: 256px;
+    max-height: 1080px;
+    height: 35vh;
+    overflow: auto;
+}
+.codeEP .exe {
+    display: flex;
+    overflow: hidden;
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+.codeEP .exe > iframe{
+    margin: 0;
+    border: 0;
+    padding: 0;
+    outline: 1px solid red;
+    width: 100%;
+    min-height: 256px;
+    max-height: 1080px;
+    height: 100%;
+    background-color: white;
+}
+#content > div {
+    margin: 8px 0px;
+}
+.passcode {
+    padding: 0;
+    margin: 0 !important;
+    font-size: 12px;
+    font-family: "courier new";
+    font-weight: bold;
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    opacity: 0.5;
+    text-align: right;
+}
+.passcode::before {
+    content: "Code: ";
+    font-weight: 0;
+}
+.prompta {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background-color: white;
+    padding: 16px;
+    border: 2px solid #0008ff;
+    border-radius: 2px;
+}
