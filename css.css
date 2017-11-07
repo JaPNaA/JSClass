@@ -48,6 +48,13 @@ button {
     box-shadow: rgba(0, 0, 0, 0.6) 2px 2px 4px 0px;
     outline: none;
 }
+button.disabled:hover {
+    opacity: 0.85;
+    cursor: not-allowed;
+}
+button.disabled:active d{
+    left: 0;
+}
 button:hover {
     opacity: 1;
     box-shadow: rgba(0, 0, 0, 0.5) 4px 4px 6px 1px;
@@ -64,6 +71,9 @@ button:active d {
 button.green {
     color: #000;
     background-color: #0f0;
+}
+button.green.disabled{
+    color: #FFF;
 }
 button.blue {
     color: #fff;
@@ -93,7 +103,7 @@ button.red {
     border: 0;
     padding: 0;
 }
-.codeEP .exe > iframe{
+.codeEP .exe > iframe {
     margin: 0;
     border: 0;
     padding: 0;
@@ -131,4 +141,14 @@ button.red {
     padding: 16px;
     border: 2px solid #0008ff;
     border-radius: 2px;
+}
+.continue {
+    position: relative;
+    display: inline-block;
+}
+.continueP {
+    text-align: right;
+    position: relative;
+    top: -46px;
+    height: 0px;
 }

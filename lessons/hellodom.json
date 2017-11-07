@@ -1,0 +1,27 @@
+{
+    "meta": {
+        "n": "Hello world!",
+        "c": "doitagain",
+        "i": 1,
+        "s": "lessons/hellodom.json"
+    },
+    "title": "Hello DOM!",
+    "content": [
+        {
+            "type": "text",
+            "dt": "You're probubly wondering why a white box appears when you pess run. Well that's the dom."
+        },
+        {
+            "type": "code",
+            "dt": "document.body.innerHTML = \"JaP is kewl\";",
+            "editable": true,
+            "runable": true,
+            "tests": false,
+            "mode": "javascript"
+        },
+        {
+            "type": "text",
+            "dt": "Try editing the text"
+        }
+    ]
+}

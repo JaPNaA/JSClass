@@ -1,8 +1,20 @@
 [
     {
         "n": "Hello world!",
-        "c": "FIRST!",
+        "c": "FIRST",
         "i": 0,
-        "s": ""
+        "s": "lessons/helloworld.json"
+    },
+    {
+        "n": "Hello DOM!",
+        "c": "doitagain",
+        "i": 1,
+        "s": "lessons/hellodom.json"
+    },
+    {
+        "n": "The end",
+        "c": "yourattheendlol",
+        "i": 2,
+        "s": "test.json"
     }
 ]

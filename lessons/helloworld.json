@@ -1,0 +1,27 @@
+{
+    "meta": {
+        "n": "Hello world!",
+        "c": "FIRST",
+        "i": 0,
+        "s": "lessons/helloWorld.json"
+    },
+    "title": "Hello world!",
+    "content": [
+        {
+            "type": "text",
+            "dt": "First thing's first. This is JavaScript's version of \"print\" in many other languages. This function logs data into the JavaScript console, and is really helpfull later on with debugging."
+        },
+        {
+            "type": "code",
+            "dt": "console.log(\"Hello world!\");\n// (this is a comment) you need to press CTRL-SHIFT-I to see what you did.",
+            "editable": true,
+            "runable": true,
+            "tests": false,
+            "mode": "javascript"
+        },
+        {
+            "type": "text",
+            "dt": "Try editing the text"
+        }
+    ]
+}

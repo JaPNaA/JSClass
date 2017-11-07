@@ -4,8 +4,15 @@ const EVT = {
         }
     },
     D = {
-        currentLesson: null
+        currentLesson: null,
+        tests: [],
+        tested: false,
+        index: {}
     };
+
+if (localStorage.JSClass) {
+    D.currentLesson = JSON.parse(localStorage.JSClass);
+}
 
 function prompta(e) {
     var a = document.createElement("div");
@@ -15,12 +22,15 @@ function prompta(e) {
     a.style.top = (innerHeight - a.clientHeight) / 2 + "px";
     a.style.left = (innerWidth - a.clientWidth) / 2 + "px";
     $("ev").style.filter = "blur(2px)";
-    return {
-        close: function() {
-            document.body.removeChild(a);
-            $("ev").style.filter = "none";
-        }
+    a.close = function() {
+        if(!this.parentElement) return;
+        this.parentElement.removeChild(this);
+        $(".prompta") || ($("ev").style.filter = "none");
     };
+    setTimeout(() => addEventListener("click", function(){
+        a.close();
+    }), 150);
+    return a;
 }
 
 function launch(e) {
@@ -36,35 +46,54 @@ function launch(e) {
             reject(e);
         };
         x.send();
-    }).then(function(f, r) {
-        if (f && !r) {
-            parse(f);
-            p.close();
-        } else {
-            console.log(f, r);
-            console.log("rejected");
-        }
-    }).catch(function(e){
-        prompta("Error while loading, \n" + e);
-    });
+    })
+        .then(function(f, r) {
+            if (f && !r) {
+                parse(f);
+                p.close();
+            } else {
+                console.log(f, r);
+                console.log("rejected");
+            }
+        })
+        .catch(function(e) {
+            debugger;
+            prompta("Error while loading, \n" + e);
+        });
 }
 
 function execute(e, a, b, ed) {
-    if(a.children.length){
+    if (a.children.length) {
         ed.classList.remove("noshow");
         b.innerHTML = "Run";
         b.classList.add("blue");
         b.classList.remove("red");
-        while(a.children.length){
+        while (a.children.length) {
             a.removeChild(a.children[0]);
         }
     } else {
         var f = document.createElement("iframe");
-        f.src =
-            "data:text/html, <!DOCTYPE html><html><head><title>testing zone</title></head><body><script>" +
-            e +
-            "</script></body></html>";
+        f.src = "about:blank";
         a.appendChild(f);
+        f.contentWindow.eval(e);
+        var at = true;
+        for (i of D.tests) {
+            var r;
+            try {
+                r = f.contentWindow.eval(i.eval);
+            } catch (e) {
+                r = e;
+            }
+            if (
+                !(r.constructor == window[i.expect.type] && r == i.expect.value)
+            ) {
+                at = false;
+            }
+        }
+        if (at) {
+            b.dispatchEvent(new Event("allowContinue"));
+            D.tested = true;
+        }
         ed.classList.add("noshow");
         b.innerHTML = "Stop";
         b.classList.remove("blue");
@@ -74,6 +103,7 @@ function execute(e, a, b, ed) {
 
 function parse(e) {
     var content = $("content");
+    localStorage.JSClass = JSON.stringify(e.meta);
     $("#title").innerHTML = e.title;
 
     while (content.children.length) {
@@ -87,7 +117,7 @@ function parse(e) {
         a.innerHTML = e.meta.c;
         content.appendChild(a);
     }
-
+    D.tested = true;
     for (let i of e.content) {
         switch (i.type) {
             case "text":
@@ -96,10 +126,14 @@ function parse(e) {
                 content.appendChild(d);
                 break;
             case "code":
+                D.tested = false;
                 let a = document.createElement("div"),
                     b = ace.edit(a);
                 a.classList.add("codeE");
-                a.addEventListener("keydown", e => (e.keyCode == 83 && e.ctrlKey) && e.preventDefault())
+                a.addEventListener(
+                    "keydown",
+                    e => e.keyCode == 83 && e.ctrlKey && e.preventDefault()
+                );
                 a.value = i.dt;
                 content.appendChild(
                     (function() {
@@ -118,7 +152,15 @@ function parse(e) {
                             d.addEventListener("click", function() {
                                 execute(b.getValue(), g, d, a);
                             });
+                            d.addEventListener("allowContinue", function() {
+                                $("#continueButton").classList.remove(
+                                    "disabled"
+                                );
+                            });
                             e.appendChild(d);
+                        }
+                        if (i.tests) {
+                            D.tests.push(i.tests);
                         }
                         return e;
                     })()
@@ -140,6 +182,34 @@ function parse(e) {
                 content.appendChild($("<div class=red>unknown item</div>"));
         }
     }
+    {
+        let b = document.createElement("div"),
+            a = document.createElement("button");
+        b.classList.add("continueP");
+        a.classList.add("continue");
+        a.innerHTML = "<d>Continue</d>";
+        a.classList.add("green");
+        if (!(D.tested || !D.tests.length)) {
+            a.classList.add("disabled");
+        }
+        b.appendChild(a);
+        content.appendChild(b);
+        a.id = "continueButton";
+        a.addEventListener("click", function() {
+            if (D.tested || !D.tests.length) {
+                nextLesson();
+            }
+        });
+    }
+    D.currentLesson = e;
+}
+
+function nextLesson() {
+    var nl = D.currentLesson.meta.i + 1,
+        ld = D.index.find(function(e) {
+            return e.i == nl;
+        });
+    launch(ld.s);
 }
 
 if (D.currentLesson) {
@@ -148,8 +218,45 @@ if (D.currentLesson) {
     $("#start [i='c']").classList.add("noshow");
 }
 
-$("#start").addEventListener("click", function() {
-    launch("test.json");
+new Promise(function(resolve, reject) {
+    var x = new XMLHttpRequest();
+    x.open("GET", "index.json");
+    x.responseType = "json";
+    x.addEventListener("load", function() {
+        resolve(x.response);
+    });
+    x.send();
+}).then(function(r, e) {
+    D.index = r;
+    $("#start").addEventListener("click", function() {
+        launch(r[D.currentLesson && D.currentLesson.i || 0].s);
+    });
+    $("#useCode").addEventListener("click", function() {
+        var a = prompta("Enter code... <br><input id=\"codeEntry\">");
+        a.$("#codeEntry").addEventListener("change", function(){
+            var that = this,
+                nl = D.currentLesson = D.index.find(function(e){
+                return e.c == that.value;
+            });
+            if(!nl){
+                let a = prompta("Not a real code");
+                addEventListener("keydown", function(){
+                    a.close();
+                });
+                return;
+            }
+            a.close();
+            launch(nl.s);
+        });
+        a.$("#codeEntry").focus();
+    });
+    $("#browse").addEventListener("click", function(){
+        var s = [];
+        for(let i of D.index){
+            s.push(i.n);
+        }
+        prompta(s.join("<br>")).style.textAlign = "left";
+    });
 });
 
 for (let i in EVT) {
